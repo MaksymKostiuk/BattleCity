@@ -3,8 +3,27 @@
 
 #include <iostream>
 
+int g_windowSizeX = 640;
+int g_windowSizeY = 480;
+
+void glfwWindowSizeCallback(GLFWwindow* pWindow, int width, int height)
+{
+    g_windowSizeX = width;
+    g_windowSizeY = height;
+    glViewport(0, 0, g_windowSizeX, g_windowSizeY);
+}
+
+void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) 
+    {
+        glfwSetWindowShouldClose(pWindow, GL_TRUE);
+    }
+}
+
 int main(void)
 {
+
     /* Initialize the library */
     if (!glfwInit())
     {
@@ -14,11 +33,11 @@ int main(void)
 
     //Check the version of glfw. If the version is lower than specified, it won't work
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* pWindow = glfwCreateWindow(640, 480, "Battle City", nullptr, nullptr);
+    GLFWwindow* pWindow = glfwCreateWindow(g_windowSizeX, g_windowSizeY, "Battle City", nullptr, nullptr);
 
     //If Window hasn't created program will terminate
     if (!pWindow)
@@ -27,6 +46,9 @@ int main(void)
         glfwTerminate();
         return -1;
     }
+
+    glfwSetWindowSizeCallback(pWindow, glfwWindowSizeCallback); // fixate window's size changes
+    glfwSetKeyCallback(pWindow, glfwKeyCallback);
 
     /* Make the window's context current */
     glfwMakeContextCurrent(pWindow);
