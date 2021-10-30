@@ -5,22 +5,31 @@
 
 int main(void)
 {
-    GLFWwindow* window;
-
     /* Initialize the library */
     if (!glfwInit())
+    {
+        std::cout << "glfInit failed!" << std::endl;
         return -1;
+    }
+
+    //Check the version of glfw. If the version is lower than specified, it won't work
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
+    GLFWwindow* pWindow = glfwCreateWindow(640, 480, "Battle City", nullptr, nullptr);
+
+    //If Window hasn't created program will terminate
+    if (!pWindow)
     {
+        std::cout << "glfwCreateWindow failed!" << std::endl;
         glfwTerminate();
         return -1;
     }
 
     /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(pWindow);
 	
 	if (!gladLoadGL())
 	{
@@ -28,18 +37,19 @@ int main(void)
 		return -1;
 	}
 	
-	std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 	
 	glClearColor(1, 1, 0, 1);
 	
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(pWindow))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(pWindow);
 
         /* Poll for and process events */
         glfwPollEvents();
